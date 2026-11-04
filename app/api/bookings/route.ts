@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { services } from "@/lib/services";
 
 export async function POST(request: Request) {
   try {
@@ -8,8 +9,31 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Please complete all required fields." }, { status: 400 });
       }
     }
+    if (body.consent !== true) {
+      return NextResponse.json({ error: "Please agree to be contacted about your request." }, { status: 400 });
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+    }
+    const requestedService = services.find((service) => service.name === body.service);
+    if (!requestedService) {
+      return NextResponse.json({ error: "Please choose a service from the menu." }, { status: 400 });
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(body.date)) {
+      return NextResponse.json({ error: "Please choose a valid appointment date." }, { status: 400 });
+    }
+    const requestedDate = new Date(`${body.date}T00:00:00.000Z`);
+    if (Number.isNaN(requestedDate.valueOf()) || requestedDate.toISOString().slice(0, 10) !== body.date) {
+      return NextResponse.json({ error: "Please choose a valid appointment date." }, { status: 400 });
+    }
+    const today = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Toronto",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+    if (body.date < today) {
+      return NextResponse.json({ error: "Please choose today or a future date." }, { status: 400 });
     }
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -34,7 +58,7 @@ export async function POST(request: Request) {
         phone: body.phone.trim(),
         email: body.email.trim().toLowerCase(),
         service_name: body.service,
-        quoted_price: Number(body.price),
+        quoted_price: requestedService.launchPrice,
         preferred_date: body.date,
         preferred_time: body.time,
         notes: typeof body.notes === "string" ? body.notes.trim() : "",
