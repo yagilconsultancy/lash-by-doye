@@ -83,7 +83,11 @@ export default function AdminDashboard({ email }: { email: string }) {
       if (!response.ok) throw new Error(result.error || "We couldn't update this request.");
       setBookings((current) => current.map((booking) => booking.id === selected.id ? { ...booking, ...result.booking } : booking));
       if (status !== "pending") setFilter("all");
-      setMessage(status === "confirmed" ? "Appointment confirmed. Please contact the client to let them know." : `Request marked ${status}.`);
+      setMessage(result.notification === "sent"
+        ? `Appointment ${status}. The client was emailed an update.`
+        : result.notification === "failed" || result.notification === "skipped"
+          ? `Appointment ${status}, but the client email could not be sent. Please contact them directly.`
+          : `Request marked ${status}.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "We couldn't update this request.");
     } finally {
@@ -100,11 +104,11 @@ export default function AdminDashboard({ email }: { email: string }) {
   return (
     <main className="admin-shell">
       <header className="admin-header">
-        <a className="admin-wordmark" href="/">LD <span>LASH BY DOYE</span></a>
+        <a className="admin-wordmark" href="/"><span className="admin-monogram">LD</span><span>LASH BY DOYE</span></a>
         <div className="admin-account"><span>{email}</span><button onClick={() => void signOut()}>Sign out</button></div>
       </header>
       <section className="admin-intro">
-        <div><h1>Booking <i>requests.</i></h1><p>Studio desk · London, Ontario · Review each request and confirm directly with your client.</p></div>
+        <div><h1>Booking <i>requests.</i></h1><p>Studio desk · London, Ontario · Review requests, confirm appointments, and keep clients updated by email.</p></div>
         <button className="admin-refresh" onClick={() => void loadBookings()} disabled={loading}>Refresh requests</button>
       </section>
       <div className="admin-workspace">
@@ -136,7 +140,7 @@ export default function AdminDashboard({ email }: { email: string }) {
             ) : <div className="confirm-block"><h3>Request closed</h3><p>This request is marked {selected.status}.</p></div>}
             {error && <p className="admin-alert" role="alert">{error}</p>}{message && <p className="admin-success" role="status">{message}</p>}
             <div className="contact-actions"><span>CONTACT THE CLIENT</span><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">WhatsApp ↗</a><a href={`mailto:${selected.email}`}>Email ↗</a></div>
-            <p className="admin-note">Notifications aren’t automatic yet. Confirm with the client by WhatsApp or email after saving.</p>
+            <p className="admin-note">Clients receive email updates when their appointment status changes.</p>
           </>}
         </section>
       </div>

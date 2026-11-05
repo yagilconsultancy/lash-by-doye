@@ -10,7 +10,6 @@ function LashArtwork() {
   return <div className="lash-artwork" role="img" aria-label="Illustration of softly lifted lashes">
     <span className="art-orbit" aria-hidden="true"/>
     <span className="art-sheen" aria-hidden="true"/>
-    <span className="art-index">01 / THE DOYE LOOK</span>
     <svg className="lash-eye" viewBox="0 0 520 340" fill="none" aria-hidden="true">
       <path className="eye-shadow" d="M77 186C126 92 204 51 267 53c74 2 139 46 178 133-43 74-110 111-186 108-72-2-133-38-182-108Z"/>
       <path className="eye-line" d="M77 186C126 92 204 51 267 53c74 2 139 46 178 133-43 74-110 111-186 108-72-2-133-38-182-108Z"/>
@@ -66,7 +65,9 @@ export default function Home() {
       const response = await fetch("/api/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, consent }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to submit request.");
-      setStatus("Thank you! Your request has been received. We’ll contact you to confirm your appointment.");
+      setStatus(data.customerEmail === "sent"
+        ? "Thank you! Your request is received. We’ve emailed you a receipt and will email you when its status changes."
+        : "Thank you! Your request has been received. We’ll contact you to confirm your appointment.");
       formElement.reset(); setForm(initialForm);
     } catch (error) { setStatus(error instanceof Error ? error.message : "Something went wrong."); }
     finally { setBusy(false); }
@@ -84,8 +85,7 @@ export default function Home() {
     </header>
     <section className="hero">
       <div className="hero-copy">
-        <p className="eyebrow"><span className="eyebrow-dot"/> Now welcoming new clients <span className="eyebrow-place">· London, Ontario</span></p>
-        <h1>For the days<br/>you want to feel<br/><em>a little extra<span className="headline-mobile-break"><br/></span> you.</em></h1>
+        <h1>For the days<br/>you want to feel<br/><em>a little extra<br/>you.</em></h1>
         <p className="hero-intro">Lashes chosen around your eyes, your style, your kind of beautiful. Made with care, one appointment at a time.</p>
         <a className="button button-dark" href="#booking">Find your set <span aria-hidden="true">↗</span></a>
         <div className="offer-note"><span className="offer-amount">$10</span><span><strong>OFF EVERY LASH SERVICE</strong><small>A little welcome from Doye · limited time</small></span></div>
@@ -118,13 +118,25 @@ export default function Home() {
       <div className="booking-aside" data-reveal><p className="eyebrow">THE FIRST LITTLE STEP</p><h2>Let’s make<br/><em>it yours.</em></h2><p>Tell us what you have in mind and when you’d like to come in. Doye will personally review your request and get back to you to confirm the details.</p>
         <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div><p className="booking-location">LONDON, ONTARIO <span>·</span> BY APPOINTMENT</p></div>
       <form className="booking-form" data-reveal onSubmit={submit}>
-        <div className="form-heading"><span className="form-step">YOUR APPOINTMENT REQUEST <b>01 / 01</b></span><h3>Tell us a little about you.</h3><p>We’ll take it from here.</p></div>
-        <label>Your name<input required name="name" value={form.name} onChange={change} placeholder="First and last name" autoComplete="name"/></label>
-        <div className="field-pair"><label>Phone number<input required name="phone" type="tel" value={form.phone} onChange={change} placeholder="(519) 000-0000" autoComplete="tel"/></label><label>Email address<input required name="email" type="email" value={form.email} onChange={change} placeholder="you@email.com" autoComplete="email"/></label></div>
-        <label>Choose your service<select required name="service" value={form.service} onChange={change}><option value="">Select a lash service</option>{services.map((service) => <option key={service.name} value={service.name}>{service.name} — ${service.launchPrice} CAD</option>)}</select></label>
-        {selected && <p className="selected-price"><span>Grand opening price</span><strong>${selected.launchPrice} CAD</strong></p>}
-        <div className="field-pair"><label>Preferred date<input required type="date" name="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={change}/></label><label>Preferred time<select name="time" value={form.time} onChange={change}><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label></div>
-        <label>Anything else we should know? <span className="optional">(optional)</span><textarea rows={3} name="notes" value={form.notes} onChange={change} placeholder="Lash inspiration, sensitivities or questions…"/></label>
+        <div className="form-heading">
+          <span className="form-step"><span className="form-step-title"><i className="form-step-dot"/>YOUR APPOINTMENT REQUEST</span><b><small>STEP</small> 01 <i>/ 01</i></b></span>
+          <h3>Tell us a little about you.</h3>
+          <p>Share your details and the look you have in mind.</p>
+          <span className="form-monogram" aria-hidden="true">LD</span>
+        </div>
+        <fieldset className="form-group">
+          <legend><span>01</span> Your details</legend>
+          <label>Your name<input required name="name" value={form.name} onChange={change} placeholder="First and last name" autoComplete="name"/></label>
+          <div className="field-pair"><label>Phone number<input required name="phone" type="tel" value={form.phone} onChange={change} placeholder="(519) 000-0000" autoComplete="tel"/></label><label>Email address<input required name="email" type="email" value={form.email} onChange={change} placeholder="you@email.com" autoComplete="email"/></label></div>
+        </fieldset>
+        <fieldset className="form-group">
+          <legend><span>02</span> Appointment preferences</legend>
+          <label>Choose your service<select required name="service" value={form.service} onChange={change}><option value="">Select a lash service</option>{services.map((service) => <option key={service.name} value={service.name}>{service.name} — ${service.launchPrice} CAD</option>)}</select></label>
+          {selected && <p className="selected-price"><span>Grand opening price</span><strong>${selected.launchPrice} CAD</strong></p>}
+          <div className="field-pair"><label>Preferred date<input required type="date" name="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={change}/></label><label>Preferred time<select name="time" value={form.time} onChange={change}><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label></div>
+          <label>Anything else we should know? <span className="optional">(optional)</span><textarea rows={3} name="notes" value={form.notes} onChange={change} placeholder="Lash inspiration, sensitivities or questions…"/></label>
+        </fieldset>
+        <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment.</span></p>
         <label className="consent-check"><input required type="checkbox" name="consent"/><span>I agree that Lash by Doye may contact me about this request.</span></label>
         <button className="button button-dark submit-button" disabled={busy}>{busy ? "Sending request…" : <>Send appointment request <span aria-hidden="true">↗</span></>}</button>
         {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly.</p>

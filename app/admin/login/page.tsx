@@ -39,7 +39,7 @@ export default function AdminLogin() {
 
   return (
     <main className="admin-login-page">
-      <a className="admin-wordmark" href="/">LD <span>LASH BY DOYE</span></a>
+      <a className="admin-wordmark" href="/"><span className="admin-monogram">LD</span><span>LASH BY DOYE</span></a>
       <section className="admin-login-panel" aria-labelledby="login-title">
         <h1 id="login-title">Welcome <i>back.</i></h1>
         <p className="admin-login-copy">Sign in to review appointment requests and keep the studio moving.</p>

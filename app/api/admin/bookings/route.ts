@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthorizedAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyBookingStatus } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -66,15 +67,31 @@ export async function PATCH(request: Request) {
       }
     }
 
-    const { data, error } = await createAdminClient()
+    const supabase = createAdminClient();
+    const { data: previous, error: lookupError } = await supabase
+      .from("bookings")
+      .select("id,status,customer_name,email,service_name,preferred_date,preferred_time,confirmed_date,confirmed_time")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error("Admin booking lookup failed:", lookupError.message);
+      return NextResponse.json({ error: "We couldn't update this request. Please try again." }, { status: 502 });
+    }
+    if (!previous) {
+      return NextResponse.json({ error: "This booking request could not be found." }, { status: 404 });
+    }
+
+    const { data, error } = await supabase
       .from("bookings")
       .update({
         status,
-        confirmed_date: ["confirmed", "rescheduled"].includes(status) ? confirmedDate : null,
-        confirmed_time: ["confirmed", "rescheduled"].includes(status) ? confirmedTime?.trim() : null,
+        confirmed_date: ["confirmed", "rescheduled"].includes(status) ? confirmedDate : status === "pending" ? null : previous.confirmed_date,
+        confirmed_time: ["confirmed", "rescheduled"].includes(status) ? confirmedTime?.trim() : status === "pending" ? null : previous.confirmed_time,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)
+      .eq("status", previous.status)
       .select("id,status,confirmed_date,confirmed_time")
       .maybeSingle();
 
@@ -83,9 +100,28 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "We couldn't update this request. Please try again." }, { status: 502 });
     }
     if (!data) {
-      return NextResponse.json({ error: "This booking request could not be found." }, { status: 404 });
+      return NextResponse.json({ error: "This request changed while you were editing it. Refresh the dashboard and try again." }, { status: 409 });
     }
-    return NextResponse.json({ booking: data }, { headers: { "Cache-Control": "private, no-store" } });
+
+    let notification: "sent" | "skipped" | "failed" = "skipped";
+    if (previous.status !== status && status !== "pending") {
+      try {
+        notification = await notifyBookingStatus({
+          name: previous.customer_name,
+          email: previous.email,
+          service: previous.service_name,
+          date: previous.preferred_date,
+          time: previous.preferred_time,
+          confirmedDate: data.confirmed_date,
+          confirmedTime: data.confirmed_time,
+        }, status);
+      } catch (error) {
+        console.error("Customer status email failed.", error instanceof Error ? error.name : "UnknownError");
+        notification = "failed";
+      }
+    }
+
+    return NextResponse.json({ booking: data, notification }, { headers: { "Cache-Control": "private, no-store" } });
   } catch {
     return NextResponse.json({ error: "Please check the booking details and try again." }, { status: 400 });
   }

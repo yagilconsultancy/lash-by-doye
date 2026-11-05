@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="rim" x1="18" y1="15" x2="101" y2="107" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDFB"/><stop offset=".24" stop-color="#F7DCE2"/><stop offset=".55" stop-color="#B65E77"/><stop offset=".78" stop-color="#FFF1F3"/><stop offset="1" stop-color="#A94764"/>
+    </linearGradient>
+    <linearGradient id="face" x1="33" y1="22" x2="88" y2="99" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE9ED"/><stop offset=".24" stop-color="#E89AAD"/><stop offset=".55" stop-color="#C96581"/><stop offset=".78" stop-color="#F1B4C1"/><stop offset="1" stop-color="#A94C68"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="36" y1="29" x2="82" y2="91" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDFB"/><stop offset=".35" stop-color="#FCE8EC"/><stop offset=".62" stop-color="#D9A0AE"/><stop offset=".82" stop-color="#FFF8F7"/><stop offset="1" stop-color="#C47D90"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="34" y1="20" x2="84" y2="61" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF" stop-opacity=".88"/><stop offset="1" stop-color="#FFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="badge-shadow" x="3" y="4" width="114" height="116" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.2"/><feOffset dy="4"/><feComponentTransfer><feFuncA type="linear" slope=".23"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="letter-shadow" x="23" y="23" width="76" height="78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.25"/><feOffset dy="2.1"/><feComponentTransfer><feFuncA type="linear" slope=".42"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="disc"><circle cx="60" cy="58" r="48"/></clipPath>
+  </defs>
+  <g filter="url(#badge-shadow)">
+    <circle cx="60" cy="58" r="54" fill="#8F3F58"/>
+    <circle cx="60" cy="57" r="53" fill="url(#rim)"/>
+    <circle cx="60" cy="56" r="49.5" fill="url(#face)" stroke="#FFF9F8" stroke-opacity=".9" stroke-width="1.3"/>
+    <circle cx="60" cy="56" r="45.5" stroke="#A94D67" stroke-opacity=".38" stroke-width=".8"/>
+    <g clip-path="url(#disc)">
+      <path d="M13 23C36 2 82 1 108 25v24C78 28 43 29 12 54V23Z" fill="url(#shine)" opacity=".56"/>
+      <path d="M18 46C37 26 72 21 101 35" stroke="#FFF" stroke-opacity=".36" stroke-width="1.2" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g filter="url(#letter-shadow)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M48 29h11c17 0 27 11 27 29S76 87 59 87H48V29Z" fill="#A84D67" stroke="#A84D67" stroke-width="7"/>
+    <path d="M48 27h11c17 0 27 11 27 29S76 85 59 85H48V27Z" fill="url(#face)" stroke="url(#letter)" stroke-width="5.6"/>
+    <path d="M32 28v57h32" stroke="#A84D67" stroke-width="9"/>
+    <path d="M32 26v57h32" stroke="url(#letter)" stroke-width="7"/>
+    <path d="M37 30v49h22m-6-48h6c12 0 19 7 21 20" stroke="#FFFDFB" stroke-opacity=".82" stroke-width="1.35"/>
+  </g>
+  <path d="m91 18 2.1 5.3 5.3 2.1-5.3 2.1-2.1 5.3-2.1-5.3-5.3-2.1 5.3-2.1 2.1-5.3Z" fill="#FFF9F7" stroke="#D97891" stroke-width="1.2"/>
+</svg>

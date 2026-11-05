@@ -15,7 +15,7 @@ export default async function AdminPage() {
   if (!ready) {
     return (
       <main className="admin-login-page">
-        <a className="admin-wordmark" href="/">LD <span>LASH BY DOYE</span></a>
+        <a className="admin-wordmark" href="/"><span className="admin-monogram">LD</span><span>LASH BY DOYE</span></a>
         <section className="admin-login-panel">
           <h1>Your studio, <i>at a glance.</i></h1>
           <p className="admin-login-copy">Connect the Supabase project and admin account in <code>.env.local</code> to open appointment requests.</p>

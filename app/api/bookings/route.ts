@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { services } from "@/lib/services";
+import { notifyBooking } from "@/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -70,7 +71,24 @@ export async function POST(request: Request) {
       console.error(await result.text());
       return NextResponse.json({ error: "We couldn't save your request. Please try again shortly." }, { status: 502 });
     }
-    return NextResponse.json({ ok: true }, { status: 201 });
+
+    const delivery = await notifyBooking({
+      name: body.name.trim(),
+      phone: body.phone.trim(),
+      email: body.email.trim().toLowerCase(),
+      service: body.service,
+      date: body.date,
+      time: body.time,
+      notes: typeof body.notes === "string" ? body.notes.trim() : "",
+    });
+    const failedChannels = Object.entries(delivery)
+      .filter(([, status]) => status === "failed")
+      .map(([channel]) => channel);
+    if (failedChannels.length) {
+      console.warn("Booking saved; notification delivery failed for:", failedChannels.join(", "));
+    }
+
+    return NextResponse.json({ ok: true, customerEmail: delivery.customerEmail }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
   }
