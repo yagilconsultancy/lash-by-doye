@@ -38,6 +38,38 @@ function LashArtwork() {
   </div>;
 }
 
+// Eyelid contours with one fanned lash line, drawn around the same centre as a wide open eye.
+const eyeCenter = { x: 1130, y: 600 };
+const lidContours = Array.from({ length: 8 }, (_, index) => {
+  const width = 300 + index * 92;
+  const height = 300 + index * 66;
+  return `M${eyeCenter.x - width} ${eyeCenter.y}Q${eyeCenter.x} ${eyeCenter.y - height * 2} ${eyeCenter.x + width} ${eyeCenter.y}`;
+}).join("");
+const bannerLashes = Array.from({ length: 31 }, (_, index) => {
+  const angle = (index / 30 - 0.5) * 2.5;
+  const radiusX = 300;
+  const radiusY = 300;
+  const rootX = eyeCenter.x + Math.sin(angle) * radiusX;
+  const rootY = eyeCenter.y - Math.cos(angle) * radiusY;
+  const length = index % 2 === 0 ? 150 : 104;
+  const tipX = rootX + Math.sin(angle * 1.14) * length;
+  const tipY = rootY - Math.cos(angle * 1.14) * length;
+  const bendX = rootX + Math.sin(angle * 0.9) * length * 0.55;
+  const bendY = rootY - Math.cos(angle * 0.9) * length * 0.55;
+  return `M${(rootX - 4).toFixed(1)} ${rootY.toFixed(1)}Q${bendX.toFixed(1)} ${bendY.toFixed(1)} ${tipX.toFixed(1)} ${tipY.toFixed(1)}Q${(bendX + 6).toFixed(1)} ${bendY.toFixed(1)} ${(rootX + 4).toFixed(1)} ${rootY.toFixed(1)}Z`;
+}).join("");
+const bannerSparkles = [[1330, 86, 20], [884, 92, 11], [1402, 300, 11], [716, 512, 9], [1208, 40, 7]]
+  .map(([x, y, r]) => `M${x} ${y - r}Q${x} ${y} ${x + r} ${y}Q${x} ${y} ${x} ${y + r}Q${x} ${y} ${x - r} ${y}Q${x} ${y} ${x} ${y - r}Z`)
+  .join("");
+
+function InvitationArt() {
+  return <svg className="invitation-art" viewBox="0 0 1440 560" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+    <path className="invitation-contours" d={lidContours}/>
+    <path className="invitation-lashes" d={bannerLashes}/>
+    <path className="invitation-sparkles" d={bannerSparkles}/>
+  </svg>;
+}
+
 function ClosedEye() {
   return <svg className="closed-eye" viewBox="0 0 1000 300" aria-hidden="true">
     <path className="closed-eye-lid" d="M0 20Q500 260 1000 20"/>
@@ -149,7 +181,7 @@ export default function Home() {
         })}</div></article>)}</div>
       <p className="menu-footnote">All prices in CAD. Promotional prices reflect the grand opening discount. Service suitability and appointment details are confirmed by the studio.</p>
     </section>
-    <section className="invitation" data-reveal><div className="invitation-content"><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><div className="invitation-action"><p>Tell Doye what you have in mind, and she’ll confirm your time.</p><a className="button button-light" href="#booking">Request your appointment</a></div></div></section>
+    <section className="invitation" data-reveal><InvitationArt/><div className="invitation-content"><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><div className="invitation-action"><p>Tell Doye what you have in mind, and she’ll confirm your time.</p><a className="button button-light" href="#booking">Request your appointment</a></div></div></section>
     <section className="booking-section" id="booking">
       <div className="booking-aside" data-reveal><p className="eyebrow">THE FIRST LITTLE STEP</p><h2>Let’s make<br/><em>it yours.</em></h2><p>Tell us what you have in mind and when you’d like to come in. Doye will personally review your request and get back to you to confirm the details.</p>
         <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div><p className="booking-location">LONDON, ONTARIO <span>·</span> BY APPOINTMENT</p></div>
