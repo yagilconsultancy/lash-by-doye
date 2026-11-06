@@ -1,8 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient, type SupabaseConfig } from "@/lib/supabase/client";
+import { createRecoveryClient, type SupabaseConfig } from "@/lib/supabase/client";
 
 export default function AdminResetPassword({ supabaseConfig }: { supabaseConfig: SupabaseConfig | null }) {
   const router = useRouter();
@@ -11,39 +11,38 @@ export default function AdminResetPassword({ supabaseConfig }: { supabaseConfig:
   const [confirmPassword, setConfirmPassword] = useState("");
   const [recoveryReady, setRecoveryReady] = useState(false);
   const [recoveryCallback, setRecoveryCallback] = useState(false);
+  const clientRef = useRef<ReturnType<typeof createRecoveryClient> | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!supabaseConfig) return;
-    const recoveryInUrl = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
-    const codeInUrl = new URLSearchParams(window.location.search).has("code");
-    const recoveryCallback = recoveryInUrl || codeInUrl;
-    setRecoveryCallback(recoveryCallback);
-    const supabase = createClient(supabaseConfig!);
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const query = new URLSearchParams(window.location.search);
+    const linkFailed = hash.has("error") || query.has("error") || query.has("code");
+    const recoveryInUrl = hash.get("type") === "recovery";
+    setRecoveryCallback(linkFailed || recoveryInUrl);
+    if (linkFailed) {
+      setError("That reset link has expired or was already used. Enter your email to get a new one.");
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+
+    const supabase = createRecoveryClient(supabaseConfig);
+    clientRef.current = supabase;
+    if (!recoveryInUrl) return;
 
     let active = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (!active || !recoveryCallback) return;
+      if (!active) return;
       if (data.session) {
         setError("");
         setRecoveryReady(true);
       } else {
-        setError("The link opened, but Supabase did not establish a reset session. Open the newest email link in the same browser where you requested it. If it still fails, request another link and open it promptly.");
+        setError("That reset link couldn't be verified. Enter your email to get a new one.");
       }
     });
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (active && event === "PASSWORD_RECOVERY" && session) {
-        setError("");
-        setRecoveryReady(true);
-      }
-    });
-
-    return () => {
-      active = false;
-      listener.subscription.unsubscribe();
-    };
+    return () => { active = false; };
   }, [supabaseConfig]);
 
   async function requestReset(event: FormEvent<HTMLFormElement>) {
@@ -52,8 +51,7 @@ export default function AdminResetPassword({ supabaseConfig }: { supabaseConfig:
     setError("");
     setMessage("");
     try {
-      const supabase = createClient(supabaseConfig!);
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error: resetError } = await clientRef.current!.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/admin/reset-password`,
       });
       if (resetError) throw resetError;
@@ -82,7 +80,7 @@ export default function AdminResetPassword({ supabaseConfig }: { supabaseConfig:
     setBusy(true);
     let updated = false;
     try {
-      const supabase = createClient(supabaseConfig!);
+      const supabase = clientRef.current!;
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) throw updateError;
       updated = true;
