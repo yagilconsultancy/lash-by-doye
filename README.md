@@ -39,7 +39,7 @@ After a booking is saved, the server can send:
 - A full booking alert to `BOOKING_NOTIFICATION_EMAIL` through Resend, including the customer's name, phone, email, service, preferred date/time and notes.
 - A customer receipt email explaining that the request is not yet confirmed.
 - Customer email updates when the studio confirms, reschedules, declines, cancels, or completes an appointment.
-- Payment is due upon arrival; this reminder appears on the booking form and pre-appointment customer emails.
+- Payment is due upon arrival, and a $10 fee applies to cancellations under 24 hours and no-shows. Both reminders appear on the booking form and pre-appointment customer emails.
 
 Configure `RESEND_API_KEY` with a Resend **Sending access** key restricted to the verified `lashbydoye.com` domain. Set `RESEND_FROM_EMAIL` to a sender on that domain, for example `Lash by Doye <bookings@lashbydoye.com>`. `BOOKING_NOTIFICATION_EMAIL` is optional; if omitted, `ADMIN_EMAIL` receives studio alerts. Customer receipt emails send independently of studio alert delivery.
 

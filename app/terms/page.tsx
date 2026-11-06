@@ -26,13 +26,19 @@ export default function TermsPage() {
       <h2>Prices and payment</h2>
       <ul>
         <li>All prices are in Canadian dollars.</li>
-        <li>Payment is due when you arrive for your appointment. There’s no online payment on this site.</li>
+        <li>Payment for your service is due when you arrive for your appointment. There’s no online payment on this site.</li>
         <li>Grand opening prices and the $10 launch offer are for a limited time, and may end or change without notice.</li>
         <li>The price of your service is the price shown on this website when you send your request.</li>
       </ul>
 
       <h2>Changing or cancelling</h2>
-      <p>If you need to change or cancel, please let me know as early as you can so the time can go to someone else. I’ll let you know as soon as possible if I need to change or cancel your appointment.</p>
+      <p>If you need to change or cancel, please let me know as early as you can so the time can go to someone else.</p>
+      <ul>
+        <li>With at least 24 hours’ notice, there’s no charge.</li>
+        <li>With less than 24 hours’ notice, or if you miss your appointment, there’s a $10 fee.</li>
+        <li>The fee is payable before your next booking.</li>
+      </ul>
+      <p>If I need to change or cancel your appointment, I’ll let you know as soon as possible and you won’t be charged.</p>
 
       <h2>Website content</h2>
       <p>The words, images, logo and design on this site belong to Lash by Doye or the people who created them. Please don’t copy or reuse them without permission. Please don’t try to interfere with the site or get into any part of it that isn’t meant for you.</p>

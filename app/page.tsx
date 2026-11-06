@@ -173,7 +173,7 @@ export default function Home() {
           <div className="field-pair"><label>Preferred date<input required type="date" name="date" min={minDate || undefined} value={form.date} onChange={change}/></label><label>Preferred time<select name="time" value={form.time} onChange={change}><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label></div>
           <label>Anything else we should know? <span className="optional">(optional)</span><textarea rows={3} maxLength={1000} name="notes" value={form.notes} onChange={change} placeholder="Lash inspiration, sensitivities or questions…"/></label>
         </fieldset>
-        <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment.</span></p>
+        <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment. Cancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking.</span></p>
         <label className="consent-check"><input required type="checkbox" name="consent"/><span>I’m 17 or older, and I agree that Lash by Doye may contact me about this request.</span></label>
         <button className="button button-dark submit-button" disabled={busy}>{busy ? "Sending request…" : <>Send appointment request</>}</button>
         {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly. By sending a request, you agree to our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Policy</a>.</p>
