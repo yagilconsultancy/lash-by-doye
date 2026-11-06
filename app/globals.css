@@ -211,3 +211,69 @@ fieldset.form-group:last-of-type>label:last-child{margin-bottom:0}
 .closed-eye-lid{fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round}
 .closed-eye-lashes{fill:var(--ink)}
 @media(max-width:680px){.closing-note{padding:68px 0 0}.closing-note h2{font-size:clamp(44px,14vw,56px)}.closing-copy p{font-size:16px}.closed-eye{width:150%;margin:8px 0 0 -25%}}
+
+/* Phone and tablet layer: readable text, comfortable tap targets, no iOS zoom on form fields. */
+@media(max-width:900px){
+html{-webkit-text-size-adjust:100%}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input:not([type=checkbox]),select,textarea{font-size:16px!important;min-height:48px}
+textarea{min-height:104px}
+input[type=date]{width:100%;-webkit-appearance:none;appearance:none}
+.wordmark-name{font-size:11px}.wordmark-name small{font-size:10px}
+.footer-wordmark .wordmark-name{font-size:11px}.footer-wordmark .wordmark-name small{font-size:10px}
+.nav-book{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;font-size:13px}
+.main-nav>a:not(.nav-book){display:inline-flex;align-items:center;min-height:44px;font-size:13px}
+.eyebrow{font-size:12px;letter-spacing:.12em}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:52px;font-size:14px}
+.submit-button{width:100%;font-size:15px}
+.offer-note strong{font-size:12px}.offer-note small{font-size:12px}
+.hero-foot,.hero-foot span,.hero-foot a{font-size:11px}.hero-foot a{display:inline-flex;align-items:center;min-height:44px}
+.intro-side{font-size:11px}
+.service-note{font-size:14px}.service-row{min-height:60px;font-size:17px}.service-row small{font-size:12px}
+.service-prices del{font-size:13px}.service-column-top span{font-size:11px}
+.menu-footnote{font-size:13px;line-height:1.55}
+.booking-points b{font-size:12px}.booking-location{font-size:11px}.booking-aside p{font-size:15px}
+.form-step-title{font-size:11px}.form-step b,.form-step small,.form-step i{font-size:11px}
+.form-heading p{font-size:15px}.form-group legend{font-size:13px}.form-group legend span{font-size:12px}
+.booking-form label{font-size:14px}.optional{font-size:13px}
+.selected-price span{font-size:14px}.payment-note span{font-size:13px}
+.consent-check{align-items:flex-start;font-size:14px;min-height:44px}.consent-check input{width:22px;height:22px;flex:none}
+.form-status,.form-privacy{font-size:13px;line-height:1.5}
+.invitation-meta{font-size:11px}
+.site-footer>span{font-size:13px}.site-footer{align-items:start}
+.footer-wordmark{min-height:44px}.studio-credit,.studio-credit strong{font-size:12px}.studio-credit{display:inline-flex;align-items:center;flex-wrap:wrap;min-height:44px}
+.admin-wordmark{font-size:11px}.admin-account{font-size:13px}.admin-account span{font-size:13px;overflow-wrap:anywhere}.admin-account button{min-height:44px;font-size:13px}
+.admin-intro p{font-size:15px}.admin-refresh{min-height:44px;font-size:13px}
+.pending-pill{font-size:12px}.queue-tabs button{min-height:44px;padding:0 16px;font-size:13px}
+.request-item{min-height:72px}.request-date{font-size:12px}.request-person{font-size:16px}.request-service{font-size:13px}.status-tag{font-size:11px}
+.queue-empty{font-size:14px}.queue-empty small{font-size:13px}
+.detail-service{font-size:16px}.client-details dt{font-size:12px}.client-details dd{font-size:15px;overflow-wrap:anywhere}.client-details a{display:inline-flex;align-items:center;min-height:44px}
+.client-note span{font-size:12px}.client-note p{font-size:15px}
+.confirm-block h3{font-size:18px}.confirm-block p{font-size:14px;line-height:1.5}.confirm-fields label{font-size:13px}
+.admin-actions{display:flex;flex-wrap:wrap;gap:10px}
+.admin-primary,.admin-secondary,.admin-quiet{min-height:48px;font-size:14px}
+.admin-actions>button{flex:1 1 100%}
+.contact-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}.contact-actions span{flex:1 0 100%;font-size:12px}.contact-actions a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.admin-note{font-size:13px;line-height:1.5}.admin-alert,.admin-success{font-size:14px;line-height:1.5}
+.admin-login-page{min-height:100dvh}.admin-login-form label{font-size:13px}.admin-login-copy{font-size:15px;line-height:1.55}
+.admin-back-link{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.admin-login-foot,.admin-footer,.admin-footer span{font-size:11px}
+}
+@media(max-width:700px){.admin-workspace{display:block}.request-queue{margin-bottom:18px}}
+@media(max-width:900px){
+.hero-intro,.section-description,.booking-aside p,.closing-copy p{font-size:16px;line-height:1.6}
+.service-row>span:first-child{font-size:18px}.service-prices strong{font-size:18px}
+.booking-points span{font-size:15px}
+.payment-note span:first-child{font-size:11px}.form-step b small{font-size:11px}.wordmark-name small{white-space:nowrap}
+.detail-service b{font-size:15px}
+}
+@media(max-width:680px){
+.main-nav>a:not(.nav-book){display:none}
+.wordmark{gap:10px;min-width:0}.wordmark-name{white-space:nowrap}
+.nav-book{white-space:nowrap}
+.invitation-meta span:last-child{display:none}.invitation-meta span{font-size:11px}
+.booking-location{display:block;white-space:normal;text-align:center;border-radius:20px;padding:10px 14px;font-size:11px;letter-spacing:.06em;line-height:1.5}
+.confirm-fields{grid-template-columns:1fr!important;display:grid;gap:12px}
+.confirm-fields input,.confirm-fields select{width:100%}
+}
+@media(max-width:480px){.client-details{grid-template-columns:1fr!important}}
