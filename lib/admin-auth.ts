@@ -17,9 +17,17 @@ export async function getSignedInEmail() {
   }
 }
 
+/** ADMIN_EMAIL can hold several addresses separated by commas. */
+export function getAdminEmails() {
+  return (getServerEnv("ADMIN_EMAIL") || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export async function getAuthorizedAdmin() {
-  const allowedEmail = getServerEnv("ADMIN_EMAIL")?.trim().toLowerCase();
+  const allowedEmails = getAdminEmails();
   const email = await getSignedInEmail();
-  if (!allowedEmail || !email || email !== allowedEmail) return null;
+  if (!email || !allowedEmails.includes(email)) return null;
   return { email };
 }

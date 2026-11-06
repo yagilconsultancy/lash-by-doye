@@ -11,7 +11,7 @@ Custom Next.js appointment-request website for Lash by Doye, London, Ontario.
 
 ## Setup
 1. Install dependencies: `npm install`
-2. Copy `.env.example` to `.env.local` and add the Supabase project URL, publishable key, service-role key, and the admin email.
+2. Copy `.env.example` to `.env.local` and add the Supabase project URL, publishable key, service-role key, and the admin email. To give more than one person dashboard access, separate their emails with commas in `ADMIN_EMAIL`.
 3. In Supabase Authentication, create the studio admin user using the same email configured as `ADMIN_EMAIL`. Public sign-up is not enabled in the website.
 4. Run `supabase-schema.sql` in the Supabase SQL editor.
 5. Start locally with `npm run dev` and open `/admin` to review booking requests.
