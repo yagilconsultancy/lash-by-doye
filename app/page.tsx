@@ -149,7 +149,7 @@ export default function Home() {
         })}</div></article>)}</div>
       <p className="menu-footnote">All prices in CAD. Promotional prices reflect the grand opening discount. Service suitability and appointment details are confirmed by the studio.</p>
     </section>
-    <section className="invitation" data-reveal><div className="invitation-meta"><span>A GOOD DAY STARTS WITH YOU</span><span>LD · LONDON, ON</span></div><div className="invitation-content"><p className="eyebrow">YOUR MOMENT IS WAITING</p><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><a className="button button-light" href="#booking">Request your appointment</a></div><span className="invitation-monogram" aria-hidden="true">LD</span></section>
+    <section className="invitation" data-reveal><div className="invitation-content"><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><div className="invitation-action"><p>Tell Doye what you have in mind, and she’ll confirm your time.</p><a className="button button-light" href="#booking">Request your appointment</a></div></div></section>
     <section className="booking-section" id="booking">
       <div className="booking-aside" data-reveal><p className="eyebrow">THE FIRST LITTLE STEP</p><h2>Let’s make<br/><em>it yours.</em></h2><p>Tell us what you have in mind and when you’d like to come in. Doye will personally review your request and get back to you to confirm the details.</p>
         <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div><p className="booking-location">LONDON, ONTARIO <span>·</span> BY APPOINTMENT</p></div>
