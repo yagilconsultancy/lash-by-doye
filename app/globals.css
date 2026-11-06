@@ -298,3 +298,13 @@ input[type=date]{width:100%;-webkit-appearance:none;appearance:none}
 .footer-legal a:hover{color:var(--pink)}
 .form-privacy a{text-decoration:underline;text-underline-offset:2px}
 @media(max-width:680px){.legal-body{padding:44px 20px 56px;font-size:16px}.legal-body h2{font-size:23px}.footer-legal{grid-column:1/-1}}
+
+/* Invitation banner */
+.invitation{margin:0;min-height:0;padding:clamp(72px,10vw,132px) max(8vw,24px);background:#4a1528;background-image:none;border:0;outline:0;color:#fff7f5}
+.invitation-content{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,1fr);gap:48px;align-items:end;max-width:1240px;margin:0 auto}
+.invitation h2{margin:0;font-size:clamp(46px,7vw,100px);line-height:1;color:#fff7f5}
+.invitation h2 em{display:block;color:var(--pink)}
+.invitation-action p{margin:0 0 24px;font-size:18px;line-height:1.5;color:#f8dfe4}
+.invitation .button-light{min-height:54px;padding:0 30px;font-size:15px;background:var(--pink);color:var(--ink)}
+.invitation .button-light:hover{background:#fff7f5}
+@media(max-width:800px){.invitation{padding:72px 24px}.invitation-content{display:block}.invitation h2{font-size:clamp(36px,11.4vw,72px)}.invitation-action{margin-top:32px}.invitation-action p{font-size:17px}.invitation .button-light{width:100%}}

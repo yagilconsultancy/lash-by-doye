@@ -8,9 +8,13 @@ const preferredTimes = ["Flexible", "Morning", "Afternoon", "Evening"];
 const maxLength = { name: 100, phone: 30, email: 254, notes: 1000 };
 const maxRequestsPerEmailPerDay = 3;
 const maxRequestsPerHour = 20;
+const maxBodyBytes = 8_000;
 
 export async function POST(request: Request) {
   try {
+    if (Number(request.headers.get("content-length")) > maxBodyBytes) {
+      return NextResponse.json({ error: "Please shorten your request and try again." }, { status: 413 });
+    }
     const body = await request.json() as Record<string, any>;
 
     // Hidden field only bots fill in. Answer normally so they don't adapt.
@@ -34,6 +38,10 @@ export async function POST(request: Request) {
 
     if (name.length > maxLength.name) {
       return NextResponse.json({ error: "Please shorten your name." }, { status: 400 });
+    }
+    // Names appear in emails sent to the address entered, so links must not get through.
+    if (!/^[\p{L}\p{M}'’. -]+$/u.test(name) || /[\p{L}\d-]\.[a-z]{2,}/iu.test(name)) {
+      return NextResponse.json({ error: "Please enter your name using letters only." }, { status: 400 });
     }
     if (email.length > maxLength.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });

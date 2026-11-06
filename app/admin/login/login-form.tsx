@@ -59,7 +59,8 @@ export default function AdminLogin({ supabaseConfig }: { supabaseConfig: Supabas
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      if (linkError) throw linkError;
+      // Answer the same way for unknown emails, so the form can't be used to find the admin address.
+      if (linkError && !/signup|not allowed/i.test(linkError.message)) throw linkError;
       setMagicMessage("If this is the studio admin email, a sign-in link is on its way. Open the newest email in this browser within 60 minutes.");
     } catch (cause) {
       const detail = cause instanceof Error ? cause.message : "Unknown error";
