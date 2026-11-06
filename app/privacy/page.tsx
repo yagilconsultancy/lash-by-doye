@@ -55,7 +55,7 @@ export default function PrivacyPage() {
       <p>Bookings are for clients aged 17 and older, so I don’t knowingly collect details from anyone younger. If you think someone under 17 has sent a request, let me know and I’ll delete it.</p>
 
       <h2>Contact me</h2>
-      <p>For a privacy question or request, reply to any email you’ve received from Lash by Doye. If you’re not happy with how I’ve handled your request, you can contact the <a href="https://www.priv.gc.ca/" target="_blank" rel="noopener noreferrer">Office of the Privacy Commissioner of Canada</a>.</p>
+      <p>For a privacy question or request, reply to any email you’ve received from Lash by Doye.</p>
 
       <h2>Changes to this policy</h2>
       <p>If the way I handle your details changes, I’ll update this page and the date at the top.</p>
