@@ -176,13 +176,13 @@ export default function Home() {
         <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment.</span></p>
         <label className="consent-check"><input required type="checkbox" name="consent"/><span>I agree that Lash by Doye may contact me about this request.</span></label>
         <button className="button button-dark submit-button" disabled={busy}>{busy ? "Sending request…" : <>Send appointment request</>}</button>
-        {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly.</p>
+        {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly. By sending a request, you agree to our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Policy</a>.</p>
       </form>
     </section>
     <section className="closing-note">
       <div className="closing-copy" data-reveal><h2>Can’t wait to meet you.</h2><p>Thank you for supporting a dream. Every booking, referral and kind word means more than you know.</p></div>
       <ClosedEye/>
     </section>
-    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>London, Ontario · By appointment</span><span>© {new Date().getFullYear()} Lash by Doye</span><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
+    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>London, Ontario · By appointment</span><span>© {new Date().getFullYear()} Lash by Doye</span><nav className="footer-legal" aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Use</a></nav><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
   </main>;
 }
