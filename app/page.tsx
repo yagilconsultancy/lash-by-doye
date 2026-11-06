@@ -148,7 +148,7 @@ export default function Home() {
   ];
   return <main>
     <header className="site-header">
-      <a className="wordmark" href="#" aria-label="Lash by Doye home"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a>
+      <a className="wordmark" href="#" aria-label="Lash by Doye home"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE</span></a>
       <nav className="main-nav" aria-label="Main navigation"><a href="#services">The menu</a><a href="#about">Our story</a><a className="nav-book" href="#booking">Book your set</a></nav>
     </header>
     <section className="hero">
@@ -184,7 +184,7 @@ export default function Home() {
     <section className="invitation" data-reveal><InvitationArt/><div className="invitation-content"><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><div className="invitation-action"><p>Tell Doye what you have in mind, and she’ll confirm your time.</p><a className="button button-light" href="#booking">Request your appointment</a></div></div></section>
     <section className="booking-section" id="booking">
       <div className="booking-aside" data-reveal><p className="eyebrow">THE FIRST LITTLE STEP</p><h2>Let’s make<br/><em>it yours.</em></h2><p>Tell us what you have in mind and when you’d like to come in. Doye will personally review your request and get back to you to confirm the details.</p>
-        <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div><p className="booking-location">LONDON, ONTARIO <span>·</span> BY APPOINTMENT</p></div>
+        <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div></div>
       <form className="booking-form" data-reveal onSubmit={submit}>
         <div className="form-heading">
           <span className="form-step"><span className="form-step-title"><i className="form-step-dot"/>YOUR APPOINTMENT REQUEST</span><b><small>STEP</small> 01 <i>/ 01</i></b></span>
@@ -215,6 +215,6 @@ export default function Home() {
       <div className="closing-copy" data-reveal><h2>Can’t wait to meet you.</h2><p>Thank you for supporting a dream. Every booking, referral and kind word means more than you know.</p></div>
       <ClosedEye/>
     </section>
-    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>© {new Date().getFullYear()} Lash by Doye</span><nav className="footer-legal" aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Use</a></nav><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
+    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE</span></a><span>© {new Date().getFullYear()} Lash by Doye</span><nav className="footer-legal" aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Use</a></nav><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
   </main>;
 }

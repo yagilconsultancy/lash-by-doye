@@ -4,7 +4,7 @@ export default function LegalPage({ title, children }: { title: string; children
   return (
     <main className="legal-page">
       <header className="legal-header">
-        <a className="wordmark" href="/" aria-label="Lash by Doye home"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a>
+        <a className="wordmark" href="/" aria-label="Lash by Doye home"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE</span></a>
       </header>
       <article className="legal-body">
         <h1>{title}</h1>
