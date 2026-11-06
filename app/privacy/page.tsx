@@ -29,18 +29,18 @@ export default function PrivacyPage() {
       <p>I don’t sell your details, and I won’t add you to a marketing list because you booked.</p>
 
       <h2>Who else handles your details</h2>
-      <p>I use a few trusted services to run this website. They only handle your details so the site can work:</p>
+      <p>I use a small number of trusted third-party services to run this website. They handle your details only to:</p>
       <ul>
-        <li><strong>Supabase</strong> stores booking requests and secures the studio login.</li>
-        <li><strong>Resend</strong> delivers booking emails.</li>
-        <li><strong>Cloudflare</strong> hosts the site and helps protect it from spam and attacks.</li>
-        <li><strong>Google Fonts</strong> supplies the fonts on the site, so your browser connects to Google when a page loads.</li>
+        <li>store your booking request securely</li>
+        <li>send your receipt and appointment emails</li>
+        <li>host the site and protect it from spam and attacks</li>
       </ul>
-      <p>If you message me on WhatsApp, WhatsApp’s own privacy terms apply to that chat. Some of these companies may store or process information outside Canada, where different privacy laws can apply.</p>
+      <p>They can’t use your details for their own purposes. The site also loads its fonts from a third-party font service, which sees your IP address but never your booking details.</p>
+      <p>If we chat through a messaging app such as WhatsApp, that app’s own privacy terms apply. Some of these services may store or process information outside Canada, where different privacy laws can apply.</p>
       <p>I may also share information if the law requires it.</p>
 
       <h2>Cookies</h2>
-      <p>I don’t use advertising cookies or tracking tools on this site. The studio login uses cookies to keep me signed in, and Cloudflare may use a security cookie to help tell real visitors from bots.</p>
+      <p>I don’t use advertising cookies or tracking tools on this site. The studio login uses cookies to keep me signed in, and my hosting provider may use a security cookie to help tell real visitors from bots.</p>
 
       <h2>How long I keep your details</h2>
       <p>I delete booking details by hand about 30 to 90 days after your appointment is completed. You can ask me to delete them sooner. I may need to keep some records for longer if the law requires it.</p>
