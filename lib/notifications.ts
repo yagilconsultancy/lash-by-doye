@@ -77,7 +77,7 @@ function customerEmailHtml(title: string, copy: string, booking: CustomerBooking
   const safeDate = escapeHtml(date);
   const safeTime = escapeHtml(time);
   const paymentNotice = paymentDue
-    ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:12px;background:#fffaf4;border:1px solid #eee1d5"><tr><td style="padding:13px 16px;color:#765f51;font-size:13px;line-height:1.6"><strong style="color:#9a664e">PAYMENT</strong><br>Payment is due upon arrival for your appointment.</td></tr></table>`
+    ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:12px;background:#fffaf4;border:1px solid #eee1d5"><tr><td style="padding:13px 16px;color:#765f51;font-size:13px;line-height:1.6"><strong style="color:#9a664e">PAYMENT</strong><br>Payment is due upon arrival for your appointment.<br>Cancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking.</td></tr></table>`
     : "";
   return `<!doctype html><html><body style="margin:0;background:#fff7f7;color:#21171a;font-family:Arial,sans-serif;padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fffdfb;border:1px solid #ead8dc"><tr><td style="padding:28px 32px;border-bottom:1px solid #ead8dc"><span style="display:inline-block;width:42px;height:42px;line-height:42px;text-align:center;border-radius:50%;background:#f5d5dc;color:#a84d67;font-family:Georgia,serif;font-size:19px;font-style:italic;font-weight:bold">LD</span><span style="margin-left:12px;color:#21171a;font-size:11px;font-weight:bold;letter-spacing:2px">LASH BY DOYE</span></td></tr><tr><td style="padding:36px 32px 24px"><p style="margin:0 0 12px;color:#a6536d;font-size:10px;font-weight:bold;letter-spacing:2px">APPOINTMENT UPDATE</p><h1 style="margin:0 0 12px;font-family:Georgia,serif;font-size:30px;font-weight:normal;line-height:1.2">${title}</h1><p style="margin:0;color:#74666a;font-size:15px;line-height:1.7">Hi ${name}, ${copy}</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:24px;background:#fff6f7;border:1px solid #f0dfe3"><tr><td style="padding:18px 20px;color:#806e72;font-size:11px;line-height:1.8">YOUR APPOINTMENT<br><strong style="color:#21171a;font-size:14px">${service}</strong><br>${safeDate} · ${safeTime}</td></tr></table>${paymentNotice}<p style="margin:24px 0 0;color:#74666a;font-size:14px;line-height:1.7">With care,<br><strong style="color:#21171a">Doye</strong></p></td></tr><tr><td style="padding:18px 32px;background:#21171a;color:#d9c9cd;font-size:10px;letter-spacing:1px">LASH BY DOYE · LONDON, ONTARIO</td></tr></table></td></tr></table></body></html>`;
 }
@@ -132,7 +132,7 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
   const text = [
     `Hi ${booking.name},`, "", content.copy,
     "", `Service: ${booking.service}`, `Appointment: ${formattedDate} at ${time}`,
-    ...(content.paymentDue ? ["", "Payment: Due upon arrival for your appointment."] : []),
+    ...(content.paymentDue ? ["", "Payment: Due upon arrival for your appointment.", "Cancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking."] : []),
     "", "With care,", "Doye", "Lash by Doye · London, Ontario",
   ].join("\n");
   return sendEmail(booking.email, content.subject, text, "customer email", customerEmailHtml(
@@ -218,7 +218,7 @@ export async function notifyBooking(booking: BookingNotification) {
     safely("Customer Resend email", sendEmail(
       booking.email,
       "We received your Lash by Doye booking request",
-      `Hi ${booking.name},\n\nWe received your appointment request. It is not confirmed yet; the studio will contact you to confirm the appointment.\n\nService: ${booking.service}\nPreferred date: ${booking.date}\nPreferred time: ${booking.time}\nPayment: Due upon arrival for your appointment.\n\nThank you for supporting Lash by Doye.`,
+      `Hi ${booking.name},\n\nWe received your appointment request. It is not confirmed yet; the studio will contact you to confirm the appointment.\n\nService: ${booking.service}\nPreferred date: ${booking.date}\nPreferred time: ${booking.time}\nPayment: Due upon arrival for your appointment.\nCancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking.\n\nThank you for supporting Lash by Doye.`,
       "customer email",
       customerEmailHtml(
         "We’ve received your request.",
