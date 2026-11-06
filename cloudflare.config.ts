@@ -4,7 +4,9 @@ export default defineConfig({
   worker: defineWorker({
     name: "lash-by-doye",
     entrypoint: "vinext/server/fetch-handler",
-    compatibilityDate: "2026-11-05",
+    compatibilityDate: "2026-11-06",
+    workersDev: false,
+    previewUrls: false,
     compatibilityFlags: ["nodejs_compat", "nodejs_compat_populate_process_env"],
     assets: {
       htmlHandling: "none",
