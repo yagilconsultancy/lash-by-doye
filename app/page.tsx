@@ -215,6 +215,6 @@ export default function Home() {
       <div className="closing-copy" data-reveal><h2>Can’t wait to meet you.</h2><p>Thank you for supporting a dream. Every booking, referral and kind word means more than you know.</p></div>
       <ClosedEye/>
     </section>
-    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>London, Ontario · By appointment</span><span>© {new Date().getFullYear()} Lash by Doye</span><nav className="footer-legal" aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Use</a></nav><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
+    <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>© {new Date().getFullYear()} Lash by Doye</span><nav className="footer-legal" aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Use</a></nav><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
   </main>;
 }
