@@ -30,5 +30,5 @@ export default async function AdminPage() {
   if (email !== adminEmail?.trim().toLowerCase()) {
     redirect("/admin/login?unauthorized=1");
   }
-  return <AdminDashboard email={email} />;
+  return <AdminDashboard email={email} supabaseConfig={{ url: supabaseUrl!, key: supabaseKey! }} />;
 }

@@ -50,7 +50,7 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = await request.json() as Record<string, any>;
     const { id, status, confirmedDate, confirmedTime, retryEmail } = body;
     if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) {
       return NextResponse.json({ error: "Choose a valid booking request." }, { status: 400 });
@@ -110,6 +110,15 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "This booking request could not be found." }, { status: 404 });
     }
 
+    const appointmentChanged = ["confirmed", "rescheduled"].includes(status)
+      && (previous.confirmed_date !== confirmedDate || previous.confirmed_time !== confirmedTime.trim());
+    if (status === "rescheduled" && previous.status !== "pending" && !appointmentChanged) {
+      return NextResponse.json(
+        { booking: { id, status: previous.status, confirmed_date: previous.confirmed_date, confirmed_time: previous.confirmed_time }, notification: "unchanged" },
+        { headers: { "Cache-Control": "private, no-store" } },
+      );
+    }
+
     const { data, error } = await supabase
       .from("bookings")
       .update({
@@ -132,7 +141,7 @@ export async function PATCH(request: Request) {
     }
 
     let notification: "sent" | "skipped" | "failed" = "skipped";
-    if (previous.status !== status) {
+    if (previous.status !== status || appointmentChanged) {
       try {
         notification = await notifyBookingStatus({
           name: previous.customer_name,

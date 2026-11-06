@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, type SupabaseConfig } from "@/lib/supabase/client";
 
 type Booking = {
   id: string;
@@ -24,7 +24,7 @@ const dateLabel = (date: string) => new Intl.DateTimeFormat("en-CA", {
   timeZone: "America/Toronto", weekday: "short", month: "short", day: "numeric",
 }).format(new Date(`${date}T12:00:00`));
 
-export default function AdminDashboard({ email }: { email: string }) {
+export default function AdminDashboard({ email, supabaseConfig }: { email: string; supabaseConfig: SupabaseConfig }) {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedId, setSelectedId] = useState("");
@@ -42,7 +42,7 @@ export default function AdminDashboard({ email }: { email: string }) {
     setError("");
     try {
       const response = await fetch("/api/admin/bookings", { cache: "no-store" });
-      const result = await response.json();
+      const result = await response.json() as { error?: string; bookings: Booking[] };
       if (!response.ok) throw new Error(result.error || "We couldn't load booking requests.");
       setBookings(result.bookings as Booking[]);
       setSelectedId((current) => current || result.bookings[0]?.id || "");
@@ -80,11 +80,13 @@ export default function AdminDashboard({ email }: { email: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: selected.id, status, confirmedDate, confirmedTime }),
       });
-      const result = await response.json();
+      const result = await response.json() as { error?: string; booking?: Partial<Booking>; notification?: string };
       if (!response.ok) throw new Error(result.error || "We couldn't update this request.");
       setBookings((current) => current.map((booking) => booking.id === selected.id ? { ...booking, ...result.booking } : booking));
       if (status !== "pending") setFilter("all");
-      setMessage(result.notification === "sent"
+      setMessage(result.notification === "unchanged"
+        ? "That's already the appointment time, so nothing changed."
+        : result.notification === "sent"
         ? `Appointment ${status}. The client was emailed an update.`
         : result.notification === "failed" || result.notification === "skipped"
           ? `Appointment ${status}, but the client email could not be sent. Please contact them directly.`
@@ -107,7 +109,7 @@ export default function AdminDashboard({ email }: { email: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: selected.id, retryEmail: true }),
       });
-      const result = await response.json();
+      const result = await response.json() as { error?: string; booking?: Partial<Booking>; notification?: string };
       if (!response.ok) throw new Error(result.error || "We couldn't resend the status email.");
       setMessage(result.notification === "sent"
         ? `The ${selected.status} update email was sent to ${selected.email}.`
@@ -120,7 +122,7 @@ export default function AdminDashboard({ email }: { email: string }) {
   }
 
   async function signOut() {
-    await createClient().auth.signOut();
+    await createClient(supabaseConfig).auth.signOut();
     router.replace("/admin/login");
     router.refresh();
   }

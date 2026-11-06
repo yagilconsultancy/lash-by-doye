@@ -19,6 +19,7 @@ async function sendEmail(
   text: string,
   recipientSetting = "email recipient",
   html?: string,
+  replyTo?: string,
 ): Promise<Delivery> {
   const apiKey = getServerEnv("RESEND_API_KEY");
   const from = getServerEnv("RESEND_FROM_EMAIL");
@@ -38,7 +39,7 @@ async function sendEmail(
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from, to: [to], subject, text, ...(html ? { html } : {}) }),
+    body: JSON.stringify({ from, to: [to], subject, text, ...(html ? { html } : {}), ...(replyTo ? { reply_to: replyTo } : {}) }),
     signal: AbortSignal.timeout(8_000),
   });
 
@@ -50,6 +51,11 @@ async function sendEmail(
     errorCode: typeof errorBody?.name === "string" ? errorBody.name : "unknown_error",
   });
   return "failed";
+}
+
+// Customer replies go to the studio inbox rather than the sending address.
+function studioInbox() {
+  return getServerEnv("BOOKING_NOTIFICATION_EMAIL") || getServerEnv("ADMIN_EMAIL") || "";
 }
 
 type CustomerStatus = "pending" | "confirmed" | "rescheduled" | "declined" | "completed" | "cancelled";
@@ -131,7 +137,7 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
   ].join("\n");
   return sendEmail(booking.email, content.subject, text, "customer email", customerEmailHtml(
     content.title, content.copy.replace(/^your /, "Your "), booking, formattedDate, time, content.paymentDue,
-  ));
+  ), studioInbox());
 }
 
 async function sendWhatsAppTemplate(booking: BookingNotification): Promise<Delivery> {
@@ -202,10 +208,12 @@ export async function notifyBooking(booking: BookingNotification) {
 
   const [ownerEmail, customerEmail] = await Promise.all([
     safely("Studio Resend email", sendEmail(
-    getServerEnv("BOOKING_NOTIFICATION_EMAIL") || getServerEnv("ADMIN_EMAIL") || "",
+    studioInbox(),
     `New booking request: ${booking.name}`,
     `A new request is waiting for review.\n\n${bookingDetails}\n\nOpen the private studio dashboard to review it.`,
     "BOOKING_NOTIFICATION_EMAIL or ADMIN_EMAIL",
+    undefined,
+    booking.email,
     )),
     safely("Customer Resend email", sendEmail(
       booking.email,
@@ -220,6 +228,7 @@ export async function notifyBooking(booking: BookingNotification) {
         booking.time,
         true,
       ),
+      studioInbox(),
     )),
   ]);
 

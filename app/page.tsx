@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { services } from "@/lib/services";
 
 type BookingForm = { name: string; phone: string; email: string; service: string; date: string; time: string; notes: string };
+const torontoToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Toronto", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const initialForm: BookingForm = { name: "", phone: "", email: "", service: "", date: "", time: "Flexible", notes: "" };
 
 function LashArtwork() {
@@ -26,7 +27,10 @@ export default function Home() {
   const [form, setForm] = useState<BookingForm>(initialForm);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [minDate, setMinDate] = useState("");
   const selected = services.find((service) => service.name === form.service);
+
+  useEffect(() => { setMinDate(torontoToday()); }, []);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -59,11 +63,13 @@ export default function Home() {
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formElement = event.currentTarget;
-    const consent = new FormData(formElement).get("consent") === "on";
+    const formData = new FormData(formElement);
+    const consent = formData.get("consent") === "on";
+    const company = formData.get("company");
     setBusy(true); setStatus("");
     try {
-      const response = await fetch("/api/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, consent }) });
-      const data = await response.json();
+      const response = await fetch("/api/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, consent, company }) });
+      const data = await response.json() as { error?: string; customerEmail?: string };
       if (!response.ok) throw new Error(data.error || "Unable to submit request.");
       setStatus(data.customerEmail === "sent"
         ? "Thank you! Your request is received. We’ve emailed you a receipt and will email you when its status changes."
@@ -124,17 +130,18 @@ export default function Home() {
           <p>Share your details and the look you have in mind.</p>
           <span className="form-monogram" aria-hidden="true">LD</span>
         </div>
+        <label className="form-trap" aria-hidden="true">Company<input type="text" name="company" tabIndex={-1} autoComplete="off"/></label>
         <fieldset className="form-group">
           <legend><span>01</span> Your details</legend>
-          <label>Your name<input required name="name" value={form.name} onChange={change} placeholder="First and last name" autoComplete="name"/></label>
-          <div className="field-pair"><label>Phone number<input required name="phone" type="tel" value={form.phone} onChange={change} placeholder="(519) 000-0000" autoComplete="tel"/></label><label>Email address<input required name="email" type="email" value={form.email} onChange={change} placeholder="you@email.com" autoComplete="email"/></label></div>
+          <label>Your name<input required maxLength={100} name="name" value={form.name} onChange={change} placeholder="First and last name" autoComplete="name"/></label>
+          <div className="field-pair"><label>Phone number<input required maxLength={30} name="phone" type="tel" value={form.phone} onChange={change} placeholder="(519) 000-0000" autoComplete="tel"/></label><label>Email address<input required maxLength={254} name="email" type="email" value={form.email} onChange={change} placeholder="you@email.com" autoComplete="email"/></label></div>
         </fieldset>
         <fieldset className="form-group">
           <legend><span>02</span> Appointment preferences</legend>
           <label>Choose your service<select required name="service" value={form.service} onChange={change}><option value="">Select a lash service</option>{services.map((service) => <option key={service.name} value={service.name}>{service.name} — ${service.launchPrice} CAD</option>)}</select></label>
           {selected && <p className="selected-price"><span>Grand opening price</span><strong>${selected.launchPrice} CAD</strong></p>}
-          <div className="field-pair"><label>Preferred date<input required type="date" name="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={change}/></label><label>Preferred time<select name="time" value={form.time} onChange={change}><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label></div>
-          <label>Anything else we should know? <span className="optional">(optional)</span><textarea rows={3} name="notes" value={form.notes} onChange={change} placeholder="Lash inspiration, sensitivities or questions…"/></label>
+          <div className="field-pair"><label>Preferred date<input required type="date" name="date" min={minDate || undefined} value={form.date} onChange={change}/></label><label>Preferred time<select name="time" value={form.time} onChange={change}><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label></div>
+          <label>Anything else we should know? <span className="optional">(optional)</span><textarea rows={3} maxLength={1000} name="notes" value={form.notes} onChange={change} placeholder="Lash inspiration, sensitivities or questions…"/></label>
         </fieldset>
         <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment.</span></p>
         <label className="consent-check"><input required type="checkbox" name="consent"/><span>I agree that Lash by Doye may contact me about this request.</span></label>

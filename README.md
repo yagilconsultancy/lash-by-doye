@@ -20,6 +20,19 @@ Keep `SUPABASE_SERVICE_ROLE_KEY` only in `.env.local` and server hosting setting
 
 Online bookings and the private admin dashboard remain unavailable until Supabase credentials are configured.
 
+## Deploying to Cloudflare
+
+The live site runs on Cloudflare Workers through vinext.
+
+1. Run `npm run build:vinext`, then `npm run deploy:vinext`.
+2. Add every variable from `cloudflare.config.ts` as a Worker secret. Values are read when the site runs, so builds don't need them.
+3. In Supabase Authentication, set the Site URL to `https://lashbydoye.com` and add `https://lashbydoye.com/auth/callback` and `https://lashbydoye.com/admin/reset-password` as redirect URLs.
+4. Add a Cloudflare rate limiting rule for `/api/bookings` to cap requests per IP address.
+
+## Booking limits
+
+The booking API rejects a request when the same email has made 3 requests in 24 hours, or when the site has received 20 requests in the past hour. A hidden form field also filters out basic bots. Change the limits at the top of `app/api/bookings/route.ts`.
+
 ## Booking notifications
 
 After a booking is saved, the server can send:
