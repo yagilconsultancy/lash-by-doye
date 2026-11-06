@@ -7,6 +7,21 @@ type BookingForm = { name: string; phone: string; email: string; service: string
 const torontoToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Toronto", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const initialForm: BookingForm = { name: "", phone: "", email: "", service: "", date: "", time: "Flexible", notes: "" };
 
+// One full lash line fanning out from a closed lid. Every 3rd lash is longest, so it reads as hand-placed.
+const lashPaths = Array.from({ length: 73 }, (_, index) => {
+  const t = (index + 0.5) / 73;
+  const spread = 2 * t - 1;
+  const rootX = t * 1000;
+  const rootY = 20 + 120 * (1 - spread * spread);
+  const angle = spread * 1.05;
+  const length = (index % 3 === 0 ? 150 : index % 3 === 1 ? 104 : 124) * (0.5 + 0.5 * Math.sin(Math.PI * t) ** 0.6);
+  const tipX = rootX + Math.sin(angle) * length;
+  const tipY = rootY + Math.cos(angle) * length;
+  const bendX = rootX + Math.sin(angle) * length * 0.3;
+  const bendY = rootY + Math.cos(angle) * length * 0.72;
+  return `M${(rootX - 3).toFixed(1)} ${rootY.toFixed(1)}Q${bendX.toFixed(1)} ${bendY.toFixed(1)} ${tipX.toFixed(1)} ${tipY.toFixed(1)}Q${(bendX + 5).toFixed(1)} ${bendY.toFixed(1)} ${(rootX + 3).toFixed(1)} ${rootY.toFixed(1)}Z`;
+}).join("");
+
 function LashArtwork() {
   return <div className="lash-artwork" role="img" aria-label="Illustration of softly lifted lashes">
     <span className="art-orbit" aria-hidden="true"/>
@@ -21,6 +36,13 @@ function LashArtwork() {
     </svg>
     <span className="art-caption">A little detail.<br/><i>A whole new feeling.</i></span><span className="art-stamp">L<br/>D</span>
   </div>;
+}
+
+function ClosedEye() {
+  return <svg className="closed-eye" viewBox="0 0 1000 300" aria-hidden="true">
+    <path className="closed-eye-lid" d="M0 20Q500 260 1000 20"/>
+    <path className="closed-eye-lashes" d={lashPaths}/>
+  </svg>;
 }
 
 export default function Home() {
@@ -149,7 +171,10 @@ export default function Home() {
         {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly.</p>
       </form>
     </section>
-    <section className="closing-note" data-reveal><span className="closing-heart" aria-hidden="true">♡</span><p className="eyebrow">THANK YOU FOR SUPPORTING A DREAM</p><h2>Can’t wait to meet you.</h2><p>Every booking, referral and kind word means more than you know.</p></section>
+    <section className="closing-note">
+      <div className="closing-copy" data-reveal><h2>Can’t wait to meet you.</h2><p>Thank you for supporting a dream. Every booking, referral and kind word means more than you know.</p></div>
+      <ClosedEye/>
+    </section>
     <footer className="site-footer"><a className="wordmark footer-wordmark" href="#"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a><span>London, Ontario · By appointment</span><span>© {new Date().getFullYear()} Lash by Doye</span><a className="studio-credit" href="https://yagildigitalstudios.com" target="_blank" rel="noopener noreferrer">Concept &amp; Design by <strong>YAGIL DIGITAL STUDIOS</strong></a></footer>
   </main>;
 }
