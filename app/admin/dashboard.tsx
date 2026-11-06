@@ -60,6 +60,12 @@ export default function AdminDashboard({ email, supabaseConfig }: { email: strin
     ? bookings.filter((booking) => booking.status === "pending")
     : bookings;
   const selected = visibleBookings.find((booking) => booking.id === selectedId) || visibleBookings[0];
+
+  // Keep the remembered selection in step with the booking on screen, so changing the
+  // filter after an update keeps showing the same booking instead of jumping to another.
+  useEffect(() => {
+    if (selected && selected.id !== selectedId) setSelectedId(selected.id);
+  }, [selected?.id, selectedId]);
   const phoneDigits = selected?.phone.replace(/\D/g, "") || "";
   const whatsappNumber = phoneDigits.length === 10 ? `1${phoneDigits}` : phoneDigits;
 
@@ -82,6 +88,7 @@ export default function AdminDashboard({ email, supabaseConfig }: { email: strin
       });
       const result = await response.json() as { error?: string; booking?: Partial<Booking>; notification?: string };
       if (!response.ok) throw new Error(result.error || "We couldn't update this request.");
+      setSelectedId(selected.id);
       setBookings((current) => current.map((booking) => booking.id === selected.id ? { ...booking, ...result.booking } : booking));
       if (status !== "pending") setFilter("all");
       setMessage(result.notification === "unchanged"
