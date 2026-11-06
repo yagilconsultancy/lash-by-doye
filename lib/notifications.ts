@@ -55,7 +55,7 @@ async function sendEmail(
 
 // Customer replies go to the studio inbox rather than the sending address.
 function studioInbox() {
-  return getServerEnv("BOOKING_NOTIFICATION_EMAIL") || getServerEnv("ADMIN_EMAIL") || "";
+  return getServerEnv("BOOKING_NOTIFICATION_EMAIL") || getServerEnv("ADMIN_EMAIL")?.split(",")[0]?.trim() || "";
 }
 
 type CustomerStatus = "pending" | "confirmed" | "rescheduled" | "declined" | "completed" | "cancelled";

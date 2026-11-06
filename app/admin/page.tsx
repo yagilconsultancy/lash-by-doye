@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getSignedInEmail } from "@/lib/admin-auth";
+import { getAdminEmails, getSignedInEmail } from "@/lib/admin-auth";
 import { getServerEnv } from "@/lib/server-env";
 import AdminDashboard from "./dashboard";
 
@@ -9,8 +9,8 @@ export default async function AdminPage() {
   const supabaseUrl = getServerEnv("NEXT_PUBLIC_SUPABASE_URL");
   const supabaseKey = getServerEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
   const serviceKey = getServerEnv("SUPABASE_SERVICE_ROLE_KEY");
-  const adminEmail = getServerEnv("ADMIN_EMAIL");
-  const ready = Boolean(supabaseUrl && supabaseKey && serviceKey && adminEmail);
+  const adminEmails = getAdminEmails();
+  const ready = Boolean(supabaseUrl && supabaseKey && serviceKey && adminEmails.length);
 
   if (!ready) {
     return (
@@ -27,7 +27,7 @@ export default async function AdminPage() {
 
   const email = await getSignedInEmail();
   if (!email) redirect("/admin/login");
-  if (email !== adminEmail?.trim().toLowerCase()) {
+  if (!adminEmails.includes(email)) {
     redirect("/admin/login?unauthorized=1");
   }
   return <AdminDashboard email={email} supabaseConfig={{ url: supabaseUrl!, key: supabaseKey! }} />;
