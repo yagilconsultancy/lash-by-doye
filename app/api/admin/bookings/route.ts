@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthorizedAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyBookingStatus } from "@/lib/notifications";
+import { getServerEnv } from "@/lib/server-env";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ const bookingStatuses = [
 ] as const;
 
 export async function GET() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!getServerEnv("NEXT_PUBLIC_SUPABASE_URL") || !getServerEnv("SUPABASE_SERVICE_ROLE_KEY")) {
     return NextResponse.json({ error: "The admin dashboard is not connected yet." }, { status: 503 });
   }
 
@@ -39,7 +40,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!getServerEnv("NEXT_PUBLIC_SUPABASE_URL") || !getServerEnv("SUPABASE_SERVICE_ROLE_KEY")) {
     return NextResponse.json({ error: "The admin dashboard is not connected yet." }, { status: 503 });
   }
 
@@ -50,10 +51,37 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, status, confirmedDate, confirmedTime } = body;
+    const { id, status, confirmedDate, confirmedTime, retryEmail } = body;
     if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) {
       return NextResponse.json({ error: "Choose a valid booking request." }, { status: 400 });
     }
+    if (retryEmail === true) {
+      const { data: booking, error } = await createAdminClient()
+        .from("bookings")
+        .select("id,status,customer_name,email,service_name,preferred_date,preferred_time,confirmed_date,confirmed_time")
+        .eq("id", id)
+        .maybeSingle();
+      if (error || !booking) {
+        return NextResponse.json({ error: "We couldn't find this booking to resend its email." }, { status: error ? 502 : 404 });
+      }
+      let notification: "sent" | "skipped" | "failed";
+      try {
+        notification = await notifyBookingStatus({
+          name: booking.customer_name,
+          email: booking.email,
+          service: booking.service_name,
+          date: booking.preferred_date,
+          time: booking.preferred_time,
+          confirmedDate: booking.confirmed_date,
+          confirmedTime: booking.confirmed_time,
+        }, booking.status);
+      } catch (error) {
+        console.error("Customer status email retry failed.", error instanceof Error ? error.name : "UnknownError");
+        notification = "failed";
+      }
+      return NextResponse.json({ notification }, { headers: { "Cache-Control": "private, no-store" } });
+    }
+
     if (!bookingStatuses.includes(status)) {
       return NextResponse.json({ error: "Choose a valid booking status." }, { status: 400 });
     }
@@ -104,7 +132,7 @@ export async function PATCH(request: Request) {
     }
 
     let notification: "sent" | "skipped" | "failed" = "skipped";
-    if (previous.status !== status && status !== "pending") {
+    if (previous.status !== status) {
       try {
         notification = await notifyBookingStatus({
           name: previous.customer_name,

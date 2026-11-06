@@ -33,6 +33,7 @@ export default function AdminDashboard({ email }: { email: string }) {
   const [confirmedTime, setConfirmedTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [emailSending, setEmailSending] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -95,6 +96,29 @@ export default function AdminDashboard({ email }: { email: string }) {
     }
   }
 
+  async function resendStatusEmail() {
+    if (!selected) return;
+    setEmailSending(true);
+    setMessage("");
+    setError("");
+    try {
+      const response = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selected.id, retryEmail: true }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "We couldn't resend the status email.");
+      setMessage(result.notification === "sent"
+        ? `The ${selected.status} update email was sent to ${selected.email}.`
+        : "The email could not be sent. Check the Resend settings and try again.");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "We couldn't resend the status email.");
+    } finally {
+      setEmailSending(false);
+    }
+  }
+
   async function signOut() {
     await createClient().auth.signOut();
     router.replace("/admin/login");
@@ -140,6 +164,7 @@ export default function AdminDashboard({ email }: { email: string }) {
             ) : <div className="confirm-block"><h3>Request closed</h3><p>This request is marked {selected.status}.</p></div>}
             {error && <p className="admin-alert" role="alert">{error}</p>}{message && <p className="admin-success" role="status">{message}</p>}
             <div className="contact-actions"><span>CONTACT THE CLIENT</span><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">WhatsApp ↗</a><a href={`mailto:${selected.email}`}>Email ↗</a></div>
+            <button className="admin-quiet" onClick={() => void resendStatusEmail()} disabled={emailSending}>{emailSending ? "Sending email…" : "Resend status email"}</button>
             <p className="admin-note">Clients receive email updates when their appointment status changes.</p>
           </>}
         </section>

@@ -5,5 +5,9 @@ build/
 .env
 .env.local
 .env.*.local
+.dev.vars*
 .DS_Store
 *.tsbuildinfo
+/dist/
+.vinext/
+.cloudflare/

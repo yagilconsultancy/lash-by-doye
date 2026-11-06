@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { getServerEnv } from "@/lib/server-env";
 
 export async function getSignedInEmail() {
   try {
@@ -17,7 +18,7 @@ export async function getSignedInEmail() {
 }
 
 export async function getAuthorizedAdmin() {
-  const allowedEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const allowedEmail = getServerEnv("ADMIN_EMAIL")?.trim().toLowerCase();
   const email = await getSignedInEmail();
   if (!allowedEmail || !email || email !== allowedEmail) return null;
   return { email };
