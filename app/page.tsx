@@ -55,6 +55,14 @@ export default function Home() {
   useEffect(() => { setMinDate(torontoToday()); }, []);
 
   useEffect(() => {
+    // Supabase sends reset links here when it rejects the redirect address.
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    if (hash.get("type") === "recovery" || hash.has("error_code")) {
+      window.location.replace(`/admin/reset-password${window.location.hash}`);
+    }
+  }, []);
+
+  useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduceMotion.matches) return;
 
