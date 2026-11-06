@@ -11,21 +11,24 @@ export default function TermsPage() {
       <h2>Your request isn’t a confirmed booking</h2>
       <p>The booking form sends me a request, not a reservation. The date and time you choose are your preference. Your appointment is only confirmed once I’ve contacted you with the final date and time. I may suggest another time, or decline a request if I can’t take it.</p>
 
+      <h2>Age</h2>
+      <p>You must be 17 or older to book an appointment.</p>
+
       <h2>Your details</h2>
       <p>Please give your real name and contact details so I can reach you. Please don’t submit requests for someone else without their permission, or use the form to send spam.</p>
 
       <h2>Before your appointment</h2>
       <p>Lash extensions involve adhesives and products close to your eyes. Before your appointment, please tell me about any allergies, sensitivities, eye conditions or recent eye treatments. Whether a service is right for you is confirmed by the studio, and I may change or decline a service if I don’t think it’s suitable or safe.</p>
 
-      <h2>A note about my experience</h2>
-      <p>I’m a beginner lash artist, and I’m still learning and perfecting my craft. I’ll always give your lashes real care. Results can vary with your natural lashes, your aftercare and the style you choose, and I can’t promise an exact look or how long your set will last.</p>
+      <h2>Your results</h2>
+      <p>Every set gets my full care and attention to detail. Results can still vary with your natural lashes, your aftercare and the style you choose, so I can’t promise an exact look or how long your set will last.</p>
 
       <h2>Prices and payment</h2>
       <ul>
         <li>All prices are in Canadian dollars.</li>
         <li>Payment is due when you arrive for your appointment. There’s no online payment on this site.</li>
         <li>Grand opening prices and the $10 launch offer are for a limited time, and may end or change without notice.</li>
-        <li>The price quoted when your appointment is confirmed is the one that applies, unless your service changes.</li>
+        <li>The price of your service is the price shown on this website when you send your request.</li>
       </ul>
 
       <h2>Changing or cancelling</h2>

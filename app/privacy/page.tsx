@@ -43,13 +43,16 @@ export default function PrivacyPage() {
       <p>I don’t use advertising cookies or tracking tools on this site. The studio login uses cookies to keep me signed in, and Cloudflare may use a security cookie to help tell real visitors from bots.</p>
 
       <h2>How long I keep your details</h2>
-      <p>I keep booking details for as long as I need them to manage your appointments, keep accurate business records and meet any legal obligations. After that, I delete them. You can ask me to delete them sooner, although I may need to keep some records where the law requires it.</p>
+      <p>I delete booking details by hand about 30 to 90 days after your appointment is completed. You can ask me to delete them sooner. I may need to keep some records for longer if the law requires it.</p>
 
       <h2>Keeping your details safe</h2>
       <p>Booking requests are only available through a private, password-protected studio dashboard. No website can promise perfect security, but I work to keep your details protected and limit who can see them.</p>
 
       <h2>Your choices</h2>
       <p>You can ask to see the details I hold about you, correct anything that’s wrong, or withdraw your consent and have your details deleted. If you withdraw consent while a booking is open, I may not be able to complete it.</p>
+
+      <h2>Age</h2>
+      <p>Bookings are for clients aged 17 and older, so I don’t knowingly collect details from anyone younger. If you think someone under 17 has sent a request, let me know and I’ll delete it.</p>
 
       <h2>Contact me</h2>
       <p>For a privacy question or request, reply to any email you’ve received from Lash by Doye. If you’re not happy with how I’ve handled your request, you can contact the <a href="https://www.priv.gc.ca/" target="_blank" rel="noopener noreferrer">Office of the Privacy Commissioner of Canada</a>.</p>
