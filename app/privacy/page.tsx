@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         <li>send your receipt and appointment emails</li>
         <li>host the site and protect it from spam and attacks</li>
       </ul>
-      <p>They can’t use your details for their own purposes. The site also loads its fonts from a third-party font service, which sees your IP address but never your booking details.</p>
+      <p>They only use your details to provide these services.</p>
       <p>If we chat through a messaging app such as WhatsApp, that app’s own privacy terms apply. Some of these services may store or process information outside Canada, where different privacy laws can apply.</p>
       <p>I may also share information if the law requires it.</p>
 
