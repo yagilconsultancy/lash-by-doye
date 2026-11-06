@@ -165,7 +165,7 @@ export default function AdminDashboard({ email, supabaseConfig }: { email: strin
               </div>
             ) : <div className="confirm-block"><h3>Request closed</h3><p>This request is marked {selected.status}.</p></div>}
             {error && <p className="admin-alert" role="alert">{error}</p>}{message && <p className="admin-success" role="status">{message}</p>}
-            <div className="contact-actions"><span>CONTACT THE CLIENT</span><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">WhatsApp ↗</a><a href={`mailto:${selected.email}`}>Email ↗</a></div>
+            <div className="contact-actions"><span>CONTACT THE CLIENT</span><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">WhatsApp</a><a href={`mailto:${selected.email}`}>Email</a></div>
             <button className="admin-quiet" onClick={() => void resendStatusEmail()} disabled={emailSending}>{emailSending ? "Sending email…" : "Resend status email"}</button>
             <p className="admin-note">Clients receive email updates when their appointment status changes.</p>
           </>}

@@ -117,13 +117,13 @@ export default function Home() {
   return <main>
     <header className="site-header">
       <a className="wordmark" href="#" aria-label="Lash by Doye home"><span className="wordmark-monogram">LD</span><span className="wordmark-name">LASH BY DOYE<small>LONDON, ONTARIO</small></span></a>
-      <nav className="main-nav" aria-label="Main navigation"><a href="#services">The menu</a><a href="#about">Our story</a><a className="nav-book" href="#booking">Book your set <span aria-hidden="true">↗</span></a></nav>
+      <nav className="main-nav" aria-label="Main navigation"><a href="#services">The menu</a><a href="#about">Our story</a><a className="nav-book" href="#booking">Book your set</a></nav>
     </header>
     <section className="hero">
       <div className="hero-copy">
         <h1>For the days<br/>you want to feel<br/><em>a little extra<br/>you.</em></h1>
         <p className="hero-intro">Lashes chosen around your eyes, your style, your kind of beautiful. Made with care, one appointment at a time.</p>
-        <a className="button button-dark" href="#booking">Find your set <span aria-hidden="true">↗</span></a>
+        <a className="button button-dark" href="#booking">Find your set</a>
         <div className="offer-note"><span className="offer-amount">$10</span><span><strong>OFF EVERY LASH SERVICE</strong><small>A little welcome from Doye · limited time</small></span></div>
       </div>
       <div className="hero-visual"><LashArtwork/></div>
@@ -145,11 +145,11 @@ export default function Home() {
       <div className="service-grid">{menus.map((group) => <article className="service-column" data-number={group.number} data-reveal key={group.title}>
         <div className="service-column-top"><span>{group.number}</span><span>− $10 LAUNCH OFFER</span></div><h3>{group.title}</h3><p className="service-note">{group.note}</p>
         <div className="service-list">{group.names.map((name) => { const service = services.find((item) => item.name === name); if (!service) return null;
-          return <a className="service-row" href="#booking" key={name} onClick={() => setForm((current) => ({ ...current, service: name }))}><span>{name}<small>CAD · grand opening price</small></span><span className="service-prices"><del>${service.regularPrice}</del><strong>${service.launchPrice}</strong><i aria-hidden="true">↗</i></span></a>;
+          return <a className="service-row" href="#booking" key={name} onClick={() => setForm((current) => ({ ...current, service: name }))}><span>{name}<small>CAD · grand opening price</small></span><span className="service-prices"><del>${service.regularPrice}</del><strong>${service.launchPrice}</strong></span></a>;
         })}</div></article>)}</div>
       <p className="menu-footnote">All prices in CAD. Promotional prices reflect the grand opening discount. Service suitability and appointment details are confirmed by the studio.</p>
     </section>
-    <section className="invitation" data-reveal><div className="invitation-meta"><span>A GOOD DAY STARTS WITH YOU</span><span>LD · LONDON, ON</span></div><div className="invitation-content"><p className="eyebrow">YOUR MOMENT IS WAITING</p><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><a className="button button-light" href="#booking">Request your appointment <span aria-hidden="true">↗</span></a></div><span className="invitation-monogram" aria-hidden="true">LD</span></section>
+    <section className="invitation" data-reveal><div className="invitation-meta"><span>A GOOD DAY STARTS WITH YOU</span><span>LD · LONDON, ON</span></div><div className="invitation-content"><p className="eyebrow">YOUR MOMENT IS WAITING</p><h2>Come as you are.<br/><em>Leave a little brighter.</em></h2><a className="button button-light" href="#booking">Request your appointment</a></div><span className="invitation-monogram" aria-hidden="true">LD</span></section>
     <section className="booking-section" id="booking">
       <div className="booking-aside" data-reveal><p className="eyebrow">THE FIRST LITTLE STEP</p><h2>Let’s make<br/><em>it yours.</em></h2><p>Tell us what you have in mind and when you’d like to come in. Doye will personally review your request and get back to you to confirm the details.</p>
         <div className="booking-points"><span><b>01</b> Pick your look</span><span><b>02</b> Choose a day</span><span><b>03</b> We’ll be in touch</span></div><p className="booking-location">LONDON, ONTARIO <span>·</span> BY APPOINTMENT</p></div>
@@ -175,7 +175,7 @@ export default function Home() {
         </fieldset>
         <p className="payment-note"><span>PAYMENT</span><span>Payment is due upon arrival for your appointment.</span></p>
         <label className="consent-check"><input required type="checkbox" name="consent"/><span>I agree that Lash by Doye may contact me about this request.</span></label>
-        <button className="button button-dark submit-button" disabled={busy}>{busy ? "Sending request…" : <>Send appointment request <span aria-hidden="true">↗</span></>}</button>
+        <button className="button button-dark submit-button" disabled={busy}>{busy ? "Sending request…" : <>Send appointment request</>}</button>
         {status && <p className="form-status" role="status">{status}</p>}<p className="form-privacy">Your appointment isn’t reserved until the studio contacts you directly.</p>
       </form>
     </section>
