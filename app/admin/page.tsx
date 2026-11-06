@@ -1,16 +1,16 @@
 import { redirect } from "next/navigation";
 import { getSignedInEmail } from "@/lib/admin-auth";
+import { getServerEnv } from "@/lib/server-env";
 import AdminDashboard from "./dashboard";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const ready = Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY &&
-      process.env.ADMIN_EMAIL,
-  );
+  const supabaseUrl = getServerEnv("NEXT_PUBLIC_SUPABASE_URL");
+  const supabaseKey = getServerEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
+  const serviceKey = getServerEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const adminEmail = getServerEnv("ADMIN_EMAIL");
+  const ready = Boolean(supabaseUrl && supabaseKey && serviceKey && adminEmail);
 
   if (!ready) {
     return (
@@ -18,7 +18,7 @@ export default async function AdminPage() {
         <a className="admin-wordmark" href="/"><span className="admin-monogram">LD</span><span>LASH BY DOYE</span></a>
         <section className="admin-login-panel">
           <h1>Your studio, <i>at a glance.</i></h1>
-          <p className="admin-login-copy">Connect the Supabase project and admin account in <code>.env.local</code> to open appointment requests.</p>
+          <p className="admin-login-copy">The studio dashboard will open once its Supabase connection and admin account are configured.</p>
           <a className="admin-primary admin-link-button" href="/admin/login">Go to sign in</a>
         </section>
       </main>
@@ -27,8 +27,8 @@ export default async function AdminPage() {
 
   const email = await getSignedInEmail();
   if (!email) redirect("/admin/login");
-  if (email !== process.env.ADMIN_EMAIL?.trim().toLowerCase()) {
+  if (email !== adminEmail?.trim().toLowerCase()) {
     redirect("/admin/login?unauthorized=1");
   }
-  return <AdminDashboard email={email} />;
+  return <AdminDashboard email={email} supabaseConfig={{ url: supabaseUrl!, key: supabaseKey! }} />;
 }

@@ -1,4 +1,5 @@
 import "server-only";
+import { getServerEnv } from "@/lib/server-env";
 
 type BookingNotification = {
   name: string;
@@ -18,9 +19,10 @@ async function sendEmail(
   text: string,
   recipientSetting = "email recipient",
   html?: string,
+  replyTo?: string,
 ): Promise<Delivery> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
+  const apiKey = getServerEnv("RESEND_API_KEY");
+  const from = getServerEnv("RESEND_FROM_EMAIL");
   const missing = [
     !apiKey && "RESEND_API_KEY",
     !from && "RESEND_FROM_EMAIL",
@@ -37,7 +39,7 @@ async function sendEmail(
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from, to: [to], subject, text, ...(html ? { html } : {}) }),
+    body: JSON.stringify({ from, to: [to], subject, text, ...(html ? { html } : {}), ...(replyTo ? { reply_to: replyTo } : {}) }),
     signal: AbortSignal.timeout(8_000),
   });
 
@@ -51,7 +53,12 @@ async function sendEmail(
   return "failed";
 }
 
-type CustomerStatus = "confirmed" | "rescheduled" | "declined" | "completed" | "cancelled";
+// Customer replies go to the studio inbox rather than the sending address.
+function studioInbox() {
+  return getServerEnv("BOOKING_NOTIFICATION_EMAIL") || getServerEnv("ADMIN_EMAIL") || "";
+}
+
+type CustomerStatus = "pending" | "confirmed" | "rescheduled" | "declined" | "completed" | "cancelled";
 
 type CustomerBooking = Pick<BookingNotification, "name" | "email" | "service" | "date" | "time"> & {
   confirmedDate?: string | null;
@@ -87,6 +94,12 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
   const time = booking.confirmedTime || booking.time;
   const formattedDate = formatAppointmentDate(date);
   const titleAndCopy: Record<CustomerStatus, { subject: string; title: string; copy: string; paymentDue?: boolean }> = {
+    pending: {
+      subject: "Your Lash by Doye request is under review",
+      title: "Your request is being reviewed.",
+      copy: "your appointment request is back under review. We’ll be in touch once the studio has reviewed the details.",
+      paymentDue: true,
+    },
     confirmed: {
       subject: "Your Lash by Doye appointment is confirmed",
       title: "Your appointment is confirmed.",
@@ -124,11 +137,11 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
   ].join("\n");
   return sendEmail(booking.email, content.subject, text, "customer email", customerEmailHtml(
     content.title, content.copy.replace(/^your /, "Your "), booking, formattedDate, time, content.paymentDue,
-  ));
+  ), studioInbox());
 }
 
 async function sendWhatsAppTemplate(booking: BookingNotification): Promise<Delivery> {
-  const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+    const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const recipient = process.env.WHATSAPP_BUSINESS_NUMBER;
   const templateName = process.env.WHATSAPP_TEMPLATE_NAME;
@@ -195,10 +208,12 @@ export async function notifyBooking(booking: BookingNotification) {
 
   const [ownerEmail, customerEmail] = await Promise.all([
     safely("Studio Resend email", sendEmail(
-    process.env.BOOKING_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || "",
+    studioInbox(),
     `New booking request: ${booking.name}`,
     `A new request is waiting for review.\n\n${bookingDetails}\n\nOpen the private studio dashboard to review it.`,
     "BOOKING_NOTIFICATION_EMAIL or ADMIN_EMAIL",
+    undefined,
+    booking.email,
     )),
     safely("Customer Resend email", sendEmail(
       booking.email,
@@ -213,6 +228,7 @@ export async function notifyBooking(booking: BookingNotification) {
         booking.time,
         true,
       ),
+      studioInbox(),
     )),
   ]);
 
