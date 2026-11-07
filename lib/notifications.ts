@@ -65,13 +65,30 @@ type CustomerBooking = Pick<BookingNotification, "name" | "email" | "service" | 
   confirmedTime?: string | null;
 };
 
+// The studio address and entry steps live in Worker secrets, never in this public repo.
+// They are sent only in the confirmed-appointment email.
+type StudioLocation = { address: string; entry: string; mapUrl: string };
+
+function studioLocation(): StudioLocation | null {
+  const address = getServerEnv("STUDIO_ADDRESS")?.trim();
+  if (!address) {
+    console.warn("Studio address skipped; missing configuration: STUDIO_ADDRESS");
+    return null;
+  }
+  return {
+    address,
+    entry: getServerEnv("STUDIO_ENTRY_NOTE")?.trim() || "",
+    mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`,
+  };
+}
+
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[character] || character);
 }
 
-function customerEmailHtml(title: string, copy: string, booking: CustomerBooking, date: string, time: string, paymentDue = false) {
+function customerEmailHtml(title: string, copy: string, booking: CustomerBooking, date: string, time: string, paymentDue = false, location: StudioLocation | null = null) {
   const name = escapeHtml(booking.name);
   const service = escapeHtml(booking.service);
   const safeDate = escapeHtml(date);
@@ -79,7 +96,10 @@ function customerEmailHtml(title: string, copy: string, booking: CustomerBooking
   const paymentNotice = paymentDue
     ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:12px;background:#fffaf4;border:1px solid #eee1d5"><tr><td style="padding:13px 16px;color:#765f51;font-size:13px;line-height:1.6"><strong style="color:#9a664e">PAYMENT</strong><br>Payment is due upon arrival for your appointment.<br>Cancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking.</td></tr></table>`
     : "";
-  return `<!doctype html><html><body style="margin:0;background:#fff7f7;color:#21171a;font-family:Arial,sans-serif;padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fffdfb;border:1px solid #ead8dc"><tr><td style="padding:28px 32px;border-bottom:1px solid #ead8dc"><span style="display:inline-block;width:42px;height:42px;line-height:42px;text-align:center;border-radius:50%;background:#f5d5dc;color:#a84d67;font-family:Georgia,serif;font-size:19px;font-style:italic;font-weight:bold">LD</span><span style="margin-left:12px;color:#21171a;font-size:11px;font-weight:bold;letter-spacing:2px">LASH BY DOYE</span></td></tr><tr><td style="padding:36px 32px 24px"><p style="margin:0 0 12px;color:#a6536d;font-size:10px;font-weight:bold;letter-spacing:2px">APPOINTMENT UPDATE</p><h1 style="margin:0 0 12px;font-family:Georgia,serif;font-size:30px;font-weight:normal;line-height:1.2">${title}</h1><p style="margin:0;color:#74666a;font-size:15px;line-height:1.7">Hi ${name}, ${copy}</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:24px;background:#fff6f7;border:1px solid #f0dfe3"><tr><td style="padding:18px 20px;color:#806e72;font-size:11px;line-height:1.8">YOUR APPOINTMENT<br><strong style="color:#21171a;font-size:14px">${service}</strong><br>${safeDate} · ${safeTime}</td></tr></table>${paymentNotice}<p style="margin:24px 0 0;color:#74666a;font-size:14px;line-height:1.7">With care,<br><strong style="color:#21171a">Doye</strong></p></td></tr><tr><td style="padding:18px 32px;background:#21171a;color:#d9c9cd;font-size:10px;letter-spacing:1px">LASH BY DOYE · LONDON, ONTARIO</td></tr></table></td></tr></table></body></html>`;
+  const locationNotice = location
+    ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:12px;background:#fff6f7;border:1px solid #f0dfe3"><tr><td style="padding:16px 20px;color:#74666a;font-size:13px;line-height:1.7"><strong style="color:#a6536d;font-size:11px;letter-spacing:2px">WHERE TO FIND US</strong><br><a href="${escapeHtml(location.mapUrl)}" style="color:#21171a;font-size:14px;font-weight:bold;text-decoration:underline">${escapeHtml(location.address)}</a>${location.entry ? `<br>${escapeHtml(location.entry)}` : ""}</td></tr></table>`
+    : "";
+  return `<!doctype html><html><body style="margin:0;background:#fff7f7;color:#21171a;font-family:Arial,sans-serif;padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fffdfb;border:1px solid #ead8dc"><tr><td style="padding:28px 32px;border-bottom:1px solid #ead8dc"><span style="display:inline-block;width:42px;height:42px;line-height:42px;text-align:center;border-radius:50%;background:#f5d5dc;color:#a84d67;font-family:Georgia,serif;font-size:19px;font-style:italic;font-weight:bold">LD</span><span style="margin-left:12px;color:#21171a;font-size:11px;font-weight:bold;letter-spacing:2px">LASH BY DOYE</span></td></tr><tr><td style="padding:36px 32px 24px"><p style="margin:0 0 12px;color:#a6536d;font-size:10px;font-weight:bold;letter-spacing:2px">APPOINTMENT UPDATE</p><h1 style="margin:0 0 12px;font-family:Georgia,serif;font-size:30px;font-weight:normal;line-height:1.2">${title}</h1><p style="margin:0;color:#74666a;font-size:15px;line-height:1.7">Hi ${name}, ${copy}</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:24px;background:#fff6f7;border:1px solid #f0dfe3"><tr><td style="padding:18px 20px;color:#806e72;font-size:11px;line-height:1.8">YOUR APPOINTMENT<br><strong style="color:#21171a;font-size:14px">${service}</strong><br>${safeDate} · ${safeTime}</td></tr></table>${locationNotice}${paymentNotice}<p style="margin:24px 0 0;color:#74666a;font-size:14px;line-height:1.7">With care,<br><strong style="color:#21171a">Doye</strong></p></td></tr><tr><td style="padding:18px 32px;background:#21171a;color:#d9c9cd;font-size:10px;letter-spacing:1px">LASH BY DOYE · LONDON, ONTARIO</td></tr></table></td></tr></table></body></html>`;
 }
 
 function formatAppointmentDate(date: string) {
@@ -93,7 +113,7 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
   const date = booking.confirmedDate || booking.date;
   const time = booking.confirmedTime || booking.time;
   const formattedDate = formatAppointmentDate(date);
-  const titleAndCopy: Record<CustomerStatus, { subject: string; title: string; copy: string; paymentDue?: boolean }> = {
+  const titleAndCopy: Record<CustomerStatus, { subject: string; title: string; copy: string; paymentDue?: boolean; showLocation?: boolean }> = {
     pending: {
       subject: "Your Lash by Doye request is under review",
       title: "Your request is being reviewed.",
@@ -105,6 +125,7 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
       title: "Your appointment is confirmed.",
       copy: "your appointment is confirmed. We look forward to seeing you.",
       paymentDue: true,
+      showLocation: true,
     },
     rescheduled: {
       subject: "Your Lash by Doye appointment has been updated",
@@ -129,14 +150,16 @@ export async function notifyBookingStatus(booking: CustomerBooking, status: Cust
     },
   };
   const content = titleAndCopy[status];
+  const location = content.showLocation ? studioLocation() : null;
   const text = [
     `Hi ${booking.name},`, "", content.copy,
     "", `Service: ${booking.service}`, `Appointment: ${formattedDate} at ${time}`,
+    ...(location ? ["", `Address: ${location.address}`, ...(location.entry ? [`Getting in: ${location.entry}`] : []), `Map: ${location.mapUrl}`] : []),
     ...(content.paymentDue ? ["", "Payment: Due upon arrival for your appointment.", "Cancelling with less than 24 hours’ notice or missing your appointment has a $10 fee, payable before your next booking."] : []),
     "", "With care,", "Doye", "Lash by Doye · London, Ontario",
   ].join("\n");
   return sendEmail(booking.email, content.subject, text, "customer email", customerEmailHtml(
-    content.title, content.copy.replace(/^your /, "Your "), booking, formattedDate, time, content.paymentDue,
+    content.title, content.copy.replace(/^your /, "Your "), booking, formattedDate, time, content.paymentDue, location,
   ), studioInbox());
 }
 
