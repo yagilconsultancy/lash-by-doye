@@ -169,7 +169,7 @@ export default function Home() {
     </div>
     <section className="intro-section" id="about" data-reveal>
       <div className="intro-mark" aria-hidden="true">“</div>
-      <div><p className="eyebrow">A NOTE FROM DOYE</p><p className="intro-statement">I’m a beginner lash artist with a big love for the little details. I’m learning, growing, and perfecting my craft — <em>and I’d love for you to be part of the journey.</em></p><span className="signature">With love, Doye</span></div>
+      <div><p className="eyebrow">A NOTE FROM DOYE</p><p className="intro-statement">Every set I create is shaped around you: your eyes, your style, your kind of beautiful. I obsess over the little details so you don’t have to, <em>and I’d love to give you lashes you can’t stop smiling about.</em></p><span className="signature">With love, Doye</span></div>
       <div className="intro-side">SOFT GLAM<br/>PERSONAL STYLE<br/>GOOD ENERGY</div>
     </section>
     <section className="menu-section" id="services">
